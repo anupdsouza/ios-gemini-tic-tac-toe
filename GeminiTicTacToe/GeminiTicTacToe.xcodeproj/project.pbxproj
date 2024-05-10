@@ -11,6 +11,8 @@
 		E485CEEC2BEE2E4E008521AD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E485CEEB2BEE2E4E008521AD /* ContentView.swift */; };
 		E485CEEE2BEE2E50008521AD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E485CEED2BEE2E50008521AD /* Assets.xcassets */; };
 		E485CEF12BEE2E50008521AD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E485CEF02BEE2E50008521AD /* Preview Assets.xcassets */; };
+		E485CEFA2BEE3760008521AD /* GenerativeAI-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E485CEF82BEE3760008521AD /* GenerativeAI-Info.plist */; };
+		E485CEFB2BEE3760008521AD /* APIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = E485CEF92BEE3760008521AD /* APIKey.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +21,8 @@
 		E485CEEB2BEE2E4E008521AD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E485CEED2BEE2E50008521AD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E485CEF02BEE2E50008521AD /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		E485CEF82BEE3760008521AD /* GenerativeAI-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GenerativeAI-Info.plist"; sourceTree = "<group>"; };
+		E485CEF92BEE3760008521AD /* APIKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIKey.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +57,7 @@
 			children = (
 				E485CEE92BEE2E4E008521AD /* GeminiTicTacToeApp.swift */,
 				E485CEEB2BEE2E4E008521AD /* ContentView.swift */,
+				E485CEF72BEE3760008521AD /* Config */,
 				E485CEED2BEE2E50008521AD /* Assets.xcassets */,
 				E485CEEF2BEE2E50008521AD /* Preview Content */,
 			);
@@ -65,6 +70,15 @@
 				E485CEF02BEE2E50008521AD /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		E485CEF72BEE3760008521AD /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				E485CEF82BEE3760008521AD /* GenerativeAI-Info.plist */,
+				E485CEF92BEE3760008521AD /* APIKey.swift */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -127,6 +141,7 @@
 			files = (
 				E485CEF12BEE2E50008521AD /* Preview Assets.xcassets in Resources */,
 				E485CEEE2BEE2E50008521AD /* Assets.xcassets in Resources */,
+				E485CEFA2BEE3760008521AD /* GenerativeAI-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,6 +153,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E485CEEC2BEE2E4E008521AD /* ContentView.swift in Sources */,
+				E485CEFB2BEE3760008521AD /* APIKey.swift in Sources */,
 				E485CEEA2BEE2E4E008521AD /* GeminiTicTacToeApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
