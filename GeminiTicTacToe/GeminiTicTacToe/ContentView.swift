@@ -12,14 +12,18 @@
 import SwiftUI
 
 struct ContentView: View {
+    private var columns: [GridItem] = [GridItem].init(repeating: GridItem(.flexible()), count: 3)
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+        GeometryReader(content: { geometry in
+            LazyVGrid(columns: columns, spacing: 30, content: {
+                ForEach(0..<9) { index in
+                    Circle()
+                        .fill(Color.blue)
+                }
+            })
+            .padding()
+        })
     }
 }
 
