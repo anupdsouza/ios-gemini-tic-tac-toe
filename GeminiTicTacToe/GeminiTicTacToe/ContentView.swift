@@ -12,14 +12,16 @@
 import SwiftUI
 
 struct ContentView: View {
-    private var columns: [GridItem] = [GridItem].init(repeating: GridItem(.flexible()), count: 3)
+    private var columns = [GridItem].init(repeating: GridItem(.flexible()), count: 3)
+    private let spacing: CGFloat = 30
 
     var body: some View {
         GeometryReader(content: { geometry in
-            LazyVGrid(columns: columns, spacing: 30, content: {
+            LazyVGrid(columns: columns, spacing: spacing, content: {
                 ForEach(0..<9) { index in
-                    Circle()
-                        .fill(Color.blue)
+                    MarkerItemView()
+                        .frame(width: geometry.size.width/3 - spacing,
+                               height: geometry.size.width/3 - spacing)
                 }
             })
             .padding()
