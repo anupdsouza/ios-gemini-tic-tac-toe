@@ -1,5 +1,5 @@
 //
-//  Player.swift
+//  Turn.swift
 //  GeminiTicTacToe
 //
 //  Created by Anup D'Souza on 28/05/24.
@@ -11,7 +11,10 @@
 
 import Foundation
 
-enum Player {
-    case human
-    case ai
+struct Turn {
+    let player: Player
+    let position: Int
+    var mark: String {
+        player == .human ? "xmark" : "circle"
+    }
 }

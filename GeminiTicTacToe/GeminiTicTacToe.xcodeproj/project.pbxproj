@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E4607AD82C05F41500B3E33D /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4607AD72C05F41500B3E33D /* Player.swift */; };
+		E4607ADA2C05FE0600B3E33D /* Turn.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4607AD92C05FE0600B3E33D /* Turn.swift */; };
 		E485CEEA2BEE2E4E008521AD /* GeminiTicTacToeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E485CEE92BEE2E4E008521AD /* GeminiTicTacToeApp.swift */; };
 		E485CEEC2BEE2E4E008521AD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E485CEEB2BEE2E4E008521AD /* ContentView.swift */; };
 		E485CEEE2BEE2E50008521AD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E485CEED2BEE2E50008521AD /* Assets.xcassets */; };
@@ -20,6 +21,7 @@
 
 /* Begin PBXFileReference section */
 		E4607AD72C05F41500B3E33D /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		E4607AD92C05FE0600B3E33D /* Turn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Turn.swift; sourceTree = "<group>"; };
 		E485CEE62BEE2E4E008521AD /* GeminiTicTacToe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GeminiTicTacToe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E485CEE92BEE2E4E008521AD /* GeminiTicTacToeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiTicTacToeApp.swift; sourceTree = "<group>"; };
 		E485CEEB2BEE2E4E008521AD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 				E485CEEB2BEE2E4E008521AD /* ContentView.swift */,
 				E48977682BF3312E004C39F3 /* MarkerItemView.swift */,
 				E4607AD72C05F41500B3E33D /* Player.swift */,
+				E4607AD92C05FE0600B3E33D /* Turn.swift */,
 				E485CEF72BEE3760008521AD /* Config */,
 				E485CEED2BEE2E50008521AD /* Assets.xcassets */,
 				E485CEEF2BEE2E50008521AD /* Preview Content */,
@@ -167,6 +170,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E485CEEC2BEE2E4E008521AD /* ContentView.swift in Sources */,
+				E4607ADA2C05FE0600B3E33D /* Turn.swift in Sources */,
 				E485CEFB2BEE3760008521AD /* APIKey.swift in Sources */,
 				E485CEEA2BEE2E4E008521AD /* GeminiTicTacToeApp.swift in Sources */,
 				E4607AD82C05F41500B3E33D /* Player.swift in Sources */,
