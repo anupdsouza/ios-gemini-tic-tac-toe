@@ -13,10 +13,15 @@ import SwiftUI
 
 struct MarkerItemView: View {
     let mark: String
+    let color: Color
     var body: some View {
         ZStack {
-            Circle()
-                .fill(Color.blue)
+            RoundedRectangle(cornerRadius: 5)
+                .fill(Color.white.opacity(0.2))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 5)
+                        .stroke(.yellow, lineWidth: 2.0)
+                }
             Image(systemName: mark)
                 .resizable()
                 .bold()
@@ -28,11 +33,11 @@ struct MarkerItemView: View {
                 .resizable()
                 .bold()
                 .frame(width: 40, height: 40)
-                .foregroundStyle(.white)
+                .foregroundStyle(color)
         }
     }
 }
 
 #Preview {
-    MarkerItemView(mark: "xmark")
+    MarkerItemView(mark: "xmark", color: .green)
 }
