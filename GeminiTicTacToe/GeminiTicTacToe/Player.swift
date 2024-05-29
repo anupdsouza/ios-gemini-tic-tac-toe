@@ -14,4 +14,5 @@ import Foundation
 enum Player {
     case human
     case ai
+    case computer
 }

@@ -23,62 +23,24 @@ struct ContentView: View {
     @State private var opacities = [Double](repeating: 1.0, count: 9)
     @State private var timers = [Timer?](repeating: nil, count: 9)
     
-
     var body: some View {
         VStack {
-            Text("Tic Tac Toe")
-                .font(.custom(fontName, fixedSize: 50))
-                .padding(.bottom, 20)
             
-            if isGameOver {
-                if winningPlayer != nil {
-                    Text("\(currentPlayerIcon()) Wins !")
-                } else {
-                    Text("It's a Draw !")
-                }
-            } else {
-                Text("Current turn: \(currentPlayerIcon())")
-            }
-
+            titleView()
+            
+            turnOrResultView()
+            
             GeometryReader(content: { geometry in
                 LazyVGrid(columns: columns, spacing: spacing, content: {
                     ForEach(0..<9) { index in
                         
-                        let mark = turns[index]?.mark ?? ""
-                        let markColor = turns[index]?.player == .ai ? Color.red : Color.green
-                        
-                        MarkerItemView(mark: mark,
-                                       color: markColor)
-                        .frame(width: geometry.size.width/3 - spacing,
-                               height: geometry.size.width/3 - spacing)
-                        .opacity(turns[index] == nil ? opacities[index] : 1)
-                        .onTapGesture {
-                            if isValidTurn(position: index) {
-                                
-                                updateTurn(position: index)
-                                
-                                checkForResult()
-                                
-                                if isGameOver { return }
-                                
-                                changePlayer()
-                                
-                                startFlashing()
-                                
-                                DispatchQueue.main.asyncAfter(wallDeadline: .now() + 1) {
-                                    
-                                    stopFlashing()
-                                    
-                                    updateTurn(position: aiTurn())
-                                    
-                                    checkForResult()
-                                    
-                                    if isGameOver { return }
-                                    
-                                    changePlayer()
-                                }
+                        MarkerItemView(turn: turns[index])
+                            .frame(width: geometry.size.width/3 - spacing,
+                                   height: geometry.size.width/3 - spacing)
+                            .opacity(turns[index] == nil ? opacities[index] : 1)
+                            .onTapGesture {
+                                handleTap(at: index)
                             }
-                        }
                     }
                 })
                 .disabled(currentPlayer == .ai || isGameOver)
@@ -86,15 +48,7 @@ struct ContentView: View {
             })
             
             if isGameOver {
-                Button {
-                    resetGame()
-                } label: {
-                    Text("Play again")
-                        .font(.custom(fontName, fixedSize: 20))
-                        .foregroundStyle(.black)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.orange)
+                playAgainView()
             }
         }
         .font(.custom(fontName, fixedSize: 20))
@@ -104,12 +58,63 @@ struct ContentView: View {
         }
     }
     
+    @ViewBuilder private func titleView() -> some View {
+        Text("Tic Tac Toe")
+            .font(.custom(fontName, fixedSize: 50))
+            .padding(.bottom, 20)
+    }
+    
+    @ViewBuilder private func turnOrResultView() -> some View {
+        if isGameOver {
+            if winningPlayer != nil {
+                Text("\(currentPlayerIcon()) Wins !")
+            } else {
+                Text("It's a Draw !")
+            }
+        } else {
+            Text("Current turn: \(currentPlayerIcon())")
+        }
+    }
+    
+    @ViewBuilder private func playAgainView() -> some View {
+        Button {
+            resetGame()
+        } label: {
+            Text("Play again")
+                .font(.custom(fontName, fixedSize: 20))
+                .foregroundStyle(.black)
+        }
+        .buttonStyle(.borderedProminent)
+        .tint(.orange)
+    }
+    
     private func currentPlayerIcon() -> String {
         currentPlayer == .ai ? "🤖" : "👤"
     }
 
     private func isValidTurn(position: Int) -> Bool {
         turns[position] == nil && !isGameOver
+    }
+    
+    private func handleTap(at index: Int) {
+        if isValidTurn(position: index) {
+            updateTurn(position: index)
+            checkForResult()
+
+            if isGameOver { return }
+
+            changePlayer()
+            startFlashing()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                stopFlashing()
+                updateTurn(position: aiTurn())
+                checkForResult()
+
+                if isGameOver { return }
+
+                changePlayer()
+            }
+        }
     }
     
     private func updateTurn(position: Int) {
@@ -164,10 +169,10 @@ struct ContentView: View {
         ]
         
         for pattern in winPatterns {
-            let (a, b, c) = (pattern[0], pattern[1], pattern[2])
-            if let firstPlayer = turns[a]?.player,
-               turns[b]?.player == firstPlayer,
-               turns[c]?.player == firstPlayer {
+            let (firstIndex, secondIndex, thirdIndex) = (pattern[0], pattern[1], pattern[2])
+            if let firstPlayer = turns[firstIndex]?.player,
+               turns[secondIndex]?.player == firstPlayer,
+               turns[thirdIndex]?.player == firstPlayer {
                 winningPlayer = currentPlayer
                 isGameOver = true
                 return

@@ -10,11 +10,15 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct Turn {
     let player: Player
     let position: Int
     var mark: String {
         player == .human ? "xmark" : "circle"
+    }
+    var markColor: Color {
+        player == .human ? .green : .red
     }
 }
