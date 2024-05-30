@@ -17,6 +17,7 @@
 		E485CEFB2BEE3760008521AD /* APIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = E485CEF92BEE3760008521AD /* APIKey.swift */; };
 		E485CEFE2BEE38EE008521AD /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = E485CEFD2BEE38EE008521AD /* GoogleGenerativeAI */; };
 		E48977692BF3312E004C39F3 /* MarkerItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48977682BF3312E004C39F3 /* MarkerItemView.swift */; };
+		E4A97B622C072B590054E53E /* GameService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A97B612C072B590054E53E /* GameService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		E485CEF82BEE3760008521AD /* GenerativeAI-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GenerativeAI-Info.plist"; sourceTree = "<group>"; };
 		E485CEF92BEE3760008521AD /* APIKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIKey.swift; sourceTree = "<group>"; };
 		E48977682BF3312E004C39F3 /* MarkerItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkerItemView.swift; sourceTree = "<group>"; };
+		E4A97B612C072B590054E53E /* GameService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 				E48977682BF3312E004C39F3 /* MarkerItemView.swift */,
 				E4607AD72C05F41500B3E33D /* Player.swift */,
 				E4607AD92C05FE0600B3E33D /* Turn.swift */,
+				E4A97B612C072B590054E53E /* GameService.swift */,
 				E485CEF72BEE3760008521AD /* Config */,
 				E485CEED2BEE2E50008521AD /* Assets.xcassets */,
 				E485CEEF2BEE2E50008521AD /* Preview Content */,
@@ -170,6 +173,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E485CEEC2BEE2E4E008521AD /* ContentView.swift in Sources */,
+				E4A97B622C072B590054E53E /* GameService.swift in Sources */,
 				E4607ADA2C05FE0600B3E33D /* Turn.swift in Sources */,
 				E485CEFB2BEE3760008521AD /* APIKey.swift in Sources */,
 				E485CEEA2BEE2E4E008521AD /* GeminiTicTacToeApp.swift in Sources */,

@@ -16,3 +16,13 @@ enum Player {
     case ai
     case computer
 }
+
+extension Player {
+    var icon: String {
+        switch self {
+        case .human: return "👤"
+        case .ai: return "gemini"
+        case .computer: return "🤖"
+        }
+    }
+}

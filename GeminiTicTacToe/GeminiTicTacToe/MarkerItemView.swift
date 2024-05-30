@@ -17,7 +17,7 @@ struct MarkerItemView: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 15)
-                .fill(Color.white.opacity(0.2))
+                .fill(.tile)
                 .overlay {
                     RoundedRectangle(cornerRadius: 15)
                         .stroke(.yellow, lineWidth: 2.0)
