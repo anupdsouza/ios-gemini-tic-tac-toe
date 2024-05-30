@@ -12,78 +12,58 @@
 import SwiftUI
 
 struct ContentView: View {
-    private var columns = [GridItem](repeating: GridItem(.flexible()), count: 3)
+    private let columns = Array(repeating: GridItem(.flexible()), count: 3)
     private let spacing: CGFloat = 20
     private let fontName = "Chalkboard SE Bold"
     @State private var turns = [Turn?](repeating: nil, count: 9)
-    @State private var vacantPositions: [Int] = []
+    @State private var vacantPositions = [Int]()
     @State private var currentPlayer: Player = .human
     @State private var winningPlayer: Player?
     @State private var isGameOver = false
-    @State private var opacities = [Double](repeating: 1.0, count: 9)
+    @State private var opacities = Array(repeating: 1.0, count: 9)
     @State private var timers = [Timer?](repeating: nil, count: 9)
     @State private var gameService = GameService()
 
     var body: some View {
         VStack {
-            
-            titleView()
-            
+            Text("Tic Tac Toe")
+                .font(.custom(fontName, fixedSize: 50))
+                .padding(.bottom, 20)
+
             turnOrResultView()
-            
-            GeometryReader(content: { geometry in
-                LazyVGrid(columns: columns, spacing: spacing, content: {
+
+            GeometryReader { geometry in
+                LazyVGrid(columns: columns, spacing: spacing) {
                     ForEach(0..<9) { index in
                         MarkerItemView(turn: turns[index])
                             .frame(width: geometry.size.width / 3 - spacing,
                                    height: geometry.size.width / 3 - spacing)
                             .opacity(turns[index] == nil ? opacities[index] : 1)
-                            .onTapGesture {
-                                handleTap(at: index)
-                            }
+                            .onTapGesture { handleTap(at: index) }
                     }
-                })
+                }
                 .disabled(currentPlayer == .ai || isGameOver)
                 .padding()
-            })
+            }
 
             if isGameOver {
-                playAgainView()
+                playAgainView
             }
         }
         .font(.custom(fontName, fixedSize: 20))
         .foregroundStyle(.white)
-        .background {
-            Color.black.ignoresSafeArea()
-        }
+        .background(Color.black.ignoresSafeArea())
         .onChange(of: gameService.loadingAiTurn) { _, _ in
-            if gameService.loadingAiTurn {
-                startFlashing()
-            } else {
-                stopFlashing()
-            }
+            gameService.loadingAiTurn ? startFlashing() : stopFlashing()
         }
         .onChange(of: gameService.turnPosition) { _, _ in
-            if let turnPosition = gameService.turnPosition {
-                if gameService.receivedAiTurn == false {
-                    currentPlayer = .computer
-                }
-                updateTurn(position: turnPosition)
-                checkForResult()
-                if !isGameOver {
-                    changePlayer()
-                }
-            }
+            guard let turnPosition = gameService.turnPosition else { return }
+            currentPlayer = gameService.receivedAiTurn ? currentPlayer : .computer
+            updateTurn(position: turnPosition)
+            checkForResult()
+            if !isGameOver { changePlayer() }
         }
-        .onAppear {
-            updateVacantPositions()
-        }
-    }
-
-    @ViewBuilder private func titleView() -> some View {
-        Text("Tic Tac Toe")
-            .font(.custom(fontName, fixedSize: 50))
-            .padding(.bottom, 20)
+        .onAppear { updateVacantPositions() }
     }
 
     @ViewBuilder private func turnOrResultView() -> some View {
@@ -95,15 +75,13 @@ struct ContentView: View {
                             Image(.gemini)
                                 .resizable()
                                 .frame(width: 30, height: 30)
-                            Text("Wins!")
-                                .foregroundStyle(.yellow)
+                            Text("Wins!").foregroundStyle(.yellow)
                         }
                     } else {
-                        Text("\(winner.icon) Wins!")
-                            .foregroundStyle(.yellow)
+                        Text("\(winner.icon) Wins!").foregroundStyle(.yellow)
                     }
                 } else {
-                    Text("It's a Draw !")
+                    Text("It's a Draw!")
                 }
             } else {
                 if currentPlayer == .ai {
@@ -120,8 +98,8 @@ struct ContentView: View {
         }
         .frame(height: 50)
     }
-
-    @ViewBuilder private func playAgainView() -> some View {
+    
+    @ViewBuilder private var playAgainView: some View {
         Button {
             resetGame()
         } label: {
@@ -133,24 +111,19 @@ struct ContentView: View {
         .tint(.orange)
     }
 
+    @MainActor
     private func handleTap(at index: Int) {
-        if isValidTurn(position: index) {
-            updateTurn(position: index)
-            checkForResult()
+        guard isValidTurn(position: index) else { return }
+        updateTurn(position: index)
+        checkForResult()
+        if isGameOver { return }
+        changePlayer()
 
-            if isGameOver { return }
-
-            changePlayer()
-
-            gameService.vacantPositions = vacantPositions
-            let (humanIndices, aiIndices) = getTurnIndices()
-            gameService.xPositions = humanIndices
-            gameService.oPositions = aiIndices
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                gameService.loadAiTurn()
-            }
-        }
+        gameService.vacantPositions = vacantPositions
+        let (humanIndices, aiIndices) = getTurnIndices()
+        gameService.xPositions = humanIndices
+        gameService.oPositions = aiIndices
+        gameService.loadAiTurn()
     }
 
     private func isValidTurn(position: Int) -> Bool {
@@ -163,18 +136,15 @@ struct ContentView: View {
     }
 
     private func changePlayer() {
-        currentPlayer = (currentPlayer == .ai || currentPlayer == .computer) ? .human : .ai
+        currentPlayer = currentPlayer == .human ? .ai : .human
     }
 
     private func updateVacantPositions() {
-        vacantPositions = turns.enumerated().compactMap { index, element in
-            element == nil ? index : nil
-        }
+        vacantPositions = turns.enumerated().compactMap { $0.element == nil ? $0.offset : nil }
     }
 
     private func startFlashing() {
         stopFlashing()
-
         for index in vacantPositions {
             timers[index] = Timer.scheduledTimer(withTimeInterval: Double.random(in: 0.3...0.6), repeats: true) { timer in
                 withAnimation {
@@ -185,64 +155,41 @@ struct ContentView: View {
     }
 
     private func stopFlashing() {
-        for index in timers.indices {
-            timers[index]?.invalidate()
-            timers[index] = nil
-            opacities[index] = 1
-        }
+        for timer in timers { timer?.invalidate() }
+        timers = [Timer?](repeating: nil, count: 9)
+        opacities = [Double](repeating: 1.0, count: 9)
     }
 
     private func checkForResult() {
         let winPatterns: [[Int]] = [
-            [0, 1, 2], // top row
-            [3, 4, 5], // middle row
-            [6, 7, 8], // bottom row
-            [0, 3, 6], // left column
-            [1, 4, 7], // middle column
-            [2, 5, 8], // right column
-            [0, 4, 8], // top-left to bottom-right diagonal
-            [2, 4, 6]  // top-right to bottom-left diagonal
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
         ]
 
-//        for pattern in winPatterns {
-//            let (firstIndex, secondIndex, thirdIndex) = (pattern[0], pattern[1], pattern[2])
-//            if let firstPlayer = turns[firstIndex]?.player,
-//               turns[secondIndex]?.player == firstPlayer,
-//               turns[thirdIndex]?.player == firstPlayer {
-//                winningPlayer = firstPlayer
-//                isGameOver = true
-//                return
-//            }
-//        }
         for pattern in winPatterns {
-            let (firstIndex, secondIndex, thirdIndex) = (pattern[0], pattern[1], pattern[2])
-            if let firstPlayer = turns[firstIndex]?.player,
-               (turns[secondIndex]?.player == firstPlayer || (firstPlayer == .ai && turns[secondIndex]?.player == .computer) || (firstPlayer == .computer && turns[secondIndex]?.player == .ai)),
-               (turns[thirdIndex]?.player == firstPlayer || (firstPlayer == .ai && turns[thirdIndex]?.player == .computer) || (firstPlayer == .computer && turns[thirdIndex]?.player == .ai)) {
-                winningPlayer = firstPlayer
+            let (a, b, c) = (pattern[0], pattern[1], pattern[2])
+            if let player = turns[a]?.player,
+               turns[b]?.player == player && turns[c]?.player == player {
+                winningPlayer = player
                 isGameOver = true
                 return
             }
         }
 
-        if turns.allSatisfy({ $0 != nil }) {
-            isGameOver = true // Draw
-        }
+        if turns.allSatisfy({ $0 != nil }) { isGameOver = true }
     }
-    
+
     private func getTurnIndices() -> (humanIndices: [Int], aiIndices: [Int]) {
-        var humanIndices = [Int]()
-        var aiIndices = [Int]()
-        for (index, turn) in turns.enumerated() {
-            if let turn = turn {
+        turns.enumerated().reduce(into: ([Int](), [Int]())) { result, item in
+            if let turn = item.element {
                 if turn.player == .human {
-                    humanIndices.append(index)
-                } else if turn.player == .ai || turn.player == .computer {
-                    aiIndices.append(index)
+                    result.0.append(item.offset)
+                } else {
+                    result.1.append(item.offset)
                 }
             }
         }
-        return (humanIndices, aiIndices)
     }
 
     private func resetGame() {
