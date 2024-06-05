@@ -22,41 +22,43 @@ struct MarkerItemView: View {
                     RoundedRectangle(cornerRadius: 15)
                         .stroke(.yellow, lineWidth: 2.0)
                 }
-                .overlay(alignment: .bottomTrailing, content: {
+                .overlay(alignment: .bottomTrailing) {
                     aiSymbol
-                })
-
+                        .padding([.bottom, .trailing], 5)
+                }
+            
             if let turn {
-                Image(systemName: turn.mark)
-                    .resizable()
-                    .bold()
-                    .frame(width: 40, height: 40)
-                    .foregroundStyle(.black)
+                markView(turn.mark)
+                    .foregroundStyle(Color.black)
                     .offset(x: 2, y: 1)
                     .opacity(0.5)
-                Image(systemName: turn.mark)
-                    .resizable()
-                    .bold()
-                    .frame(width: 40, height: 40)
+                markView(turn.mark)
                     .foregroundStyle(turn.markColor)
             }
         }
     }
     
-    @ViewBuilder var aiSymbol: some View {
-        Group {
-            if let turn {
-                if turn.player == .ai {
-                    Image(.gemini)
-                        .resizable()
-                        .frame(width: 15, height: 15)
-                } else if turn.player == .computer {
-                    Text("🤖")
-                        .font(.footnote)
-                }
+    @ViewBuilder private var aiSymbol: some View {
+        if let turn {
+            switch turn.player {
+            case .ai:
+                Image(.gemini)
+                    .resizable()
+                    .frame(width: 15, height: 15)
+            case .computer:
+                Text("🤖")
+                    .font(.footnote)
+            case .human:
+                EmptyView()
             }
         }
-        .padding([.bottom, .trailing], 5)
+    }
+    
+    @ViewBuilder private func markView(_ image: String) -> some View {
+        Image(systemName: image)
+            .resizable()
+            .bold()
+            .frame(width: 40, height: 40)
     }
 }
 

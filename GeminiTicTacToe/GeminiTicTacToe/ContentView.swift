@@ -26,25 +26,11 @@ struct ContentView: View {
 
     var body: some View {
         VStack {
-            Text("Tic Tac Toe")
-                .font(.custom(fontName, fixedSize: 50))
-                .padding(.bottom, 20)
+            titleView
 
-            turnOrResultView()
+            turnOrResultView
 
-            GeometryReader { geometry in
-                LazyVGrid(columns: columns, spacing: spacing) {
-                    ForEach(0..<9) { index in
-                        MarkerItemView(turn: turns[index])
-                            .frame(width: geometry.size.width / 3 - spacing,
-                                   height: geometry.size.width / 3 - spacing)
-                            .opacity(turns[index] == nil ? opacities[index] : 1)
-                            .onTapGesture { handleTap(at: index) }
-                    }
-                }
-                .disabled(currentPlayer == .ai || isGameOver)
-                .padding()
-            }
+            gameGridView
 
             if isGameOver {
                 playAgainView
@@ -66,7 +52,13 @@ struct ContentView: View {
         .onAppear { updateVacantPositions() }
     }
 
-    @ViewBuilder private func turnOrResultView() -> some View {
+    private var titleView: some View {
+        Text("Tic Tac Toe")
+            .font(.custom(fontName, fixedSize: 50))
+            .padding(.bottom, 20)
+    }
+
+    private var turnOrResultView: some View {
         Group {
             if isGameOver {
                 if let winner = winningPlayer {
@@ -98,8 +90,26 @@ struct ContentView: View {
         }
         .frame(height: 50)
     }
-    
-    @ViewBuilder private var playAgainView: some View {
+
+    private var gameGridView: some View {
+        GeometryReader { geometry in
+            LazyVGrid(columns: columns, spacing: spacing) {
+                ForEach(0..<9) { index in
+                    MarkerItemView(turn: turns[index])
+                        .frame(width: geometry.size.width / 3 - spacing,
+                               height: geometry.size.width / 3 - spacing)
+                        .opacity(turns[index] == nil ? opacities[index] : 1)
+                        .onTapGesture {
+                            Task { await handleTap(at: index) }
+                        }
+                }
+            }
+            .disabled(currentPlayer == .ai || isGameOver)
+            .padding()
+        }
+    }
+
+    private var playAgainView: some View {
         Button {
             resetGame()
         } label: {
@@ -109,6 +119,7 @@ struct ContentView: View {
         }
         .buttonStyle(.borderedProminent)
         .tint(.orange)
+        .padding(.top, 20)
     }
 
     @MainActor
@@ -198,6 +209,7 @@ struct ContentView: View {
         turns = [Turn?](repeating: nil, count: 9)
         isGameOver = false
         updateVacantPositions()
+        gameService.reset()
     }
 }
 

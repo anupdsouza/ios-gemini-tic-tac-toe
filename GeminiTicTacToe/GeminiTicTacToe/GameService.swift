@@ -20,9 +20,6 @@ import GoogleGenerativeAI
     private(set) var loadingAiTurn = false
     private(set) var receivedAiTurn = false
     private var aiTimer: Timer?
-    var vacantPositions: [Int] = []
-    var xPositions: [Int] = []
-    var oPositions: [Int] = []
     private var startPrompt = """
                                ## Introduction:
                                We are playing a game of tic-tac-toe in a 3x3 grid numbered with positions 0 to 8.
@@ -32,16 +29,41 @@ import GoogleGenerativeAI
                                We will continue taking turns until there is a winner or the board is filled (a tie).
                                You will indicate your move by telling me the number (between 0 and 8) of the square you want to place your O.
                                Before each turn, you will be provided with the positions of X's & O's in the grid as an array of integers.
-                               Always recall the winning patterns for the grid and compare against the positions of X's & O's before making a choice.
+                               Check the existing positions of X's & O's in the 3x3 grid with the winning positions before making a choice.
                                                               
                                ## Rules you must follow:
                                Rule #1. Inspect the grid for the position of X's and O's before deciding on a square.
                                Rule #2. If you are in a position to win, you MUST choose to win.
                                Rule #3. If I am in a position to win on my next turn, you must try and block my move.
                                Rule #4. If you can either WIN OR BLOCK me during your turn, you should choose to win.
-
-                               Reply ONLY with a number of the square you choose to place an O. Do not provide any reasoning behind your choice.
                                """
+    var vacantPositions: [Int] = []
+    var xPositions: [Int] = []
+    var oPositions: [Int] = []
+
+    private var aiPrompt: String {
+        var prompt = ""
+        if !startPrompt.isEmpty {
+            prompt = startPrompt
+            startPrompt = ""
+        }
+        prompt += "\nRecall the rules of tic tac toe and the winning positions for a 3x3 grid."
+        
+        if !xPositions.isEmpty {
+            if xPositions.count == 1 {
+                prompt += "\nThis is a new game."
+            }
+            prompt += "\nX position(s) in the grid are: [\(xPositions.map { String($0) }.joined(separator: ","))]."
+        }
+
+        if !oPositions.isEmpty {
+            prompt += "\nO position(s) in the grid are: [\(oPositions.map { String($0) }.joined(separator: ","))]."
+        }
+        
+        prompt += "\nReply ONLY with a number between 0 to 8 of the grid square you choose to place an O. Do not provide any explanation behind your choice."
+
+        return prompt
+    }
 
     init() {
         model = GenerativeModel(name: "gemini-1.5-flash", apiKey: APIKey.gemini)
@@ -54,41 +76,18 @@ import GoogleGenerativeAI
         receivedAiTurn = false
         turnPosition = nil
 
+        print("##################################################")
+        print("PROMPT :\n\(aiPrompt)")
+        print("##################################################")
+
         let task = Task {
             do {
-                
-                var aiPrompt = ""
-                if !startPrompt.isEmpty {
-                    aiPrompt = startPrompt
-                    startPrompt = ""
-                }
-                
-                // Add 'X' positions in the prompt
-                aiPrompt += "\nRemember the rules of tic tac toe."
-                
-                if !xPositions.isEmpty {
-                    if xPositions.count == 1 {
-                        aiPrompt += "\nThis is a new game."
-                    }
-                    
-                    aiPrompt += "\nX position(s) in the grid: [\(xPositions.map{ String($0) }.joined(separator: ","))]."
-                }
-                
-                // Add 'O' positions in the prompt
-                if !oPositions.isEmpty {
-                    aiPrompt += "\nO position(s) in the grid: [\(oPositions.map{ String($0) }.joined(separator: ","))]."
-                }
-                
-                print("##################################################")
-                print("PROMPT :\n\(aiPrompt)")
-                print("##################################################")
-                
                 let response = try await chat?.sendMessage(aiPrompt)
                 print("AI response \(response?.text ?? "empty")")
                 guard let text = response?.text?.trimmingCharacters(in: .whitespacesAndNewlines), let position = Int(text) else {
                     throw NSError(domain: "Invalid response", code: -1, userInfo: nil)
                 }
-                
+
                 withAnimation {
                     aiTimer?.invalidate()
                     loadingAiTurn = false
@@ -96,23 +95,21 @@ import GoogleGenerativeAI
                     turnPosition = position
                 }
             } catch {
-                
                 print(error.localizedDescription)
                 aiTimer?.invalidate()
                 loadingAiTurn = false
-                generateRandomAiTurn()
+                turnPosition = generateRandomAiTurn()
             }
         }
 
-        aiTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: false) { _ in
+        aiTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: false) { [weak self] _ in
             task.cancel()
-            self.generateRandomAiTurn()
+            self?.turnPosition = self?.generateRandomAiTurn()
         }
     }
 
-    private func generateRandomAiTurn() {
-        guard let randomPosition = vacantPositions.randomElement() else { return }
-        turnPosition = randomPosition
+    private func generateRandomAiTurn() -> Int? {
+        vacantPositions.randomElement()
     }
     
     func reset() {
@@ -120,4 +117,3 @@ import GoogleGenerativeAI
         vacantPositions.removeAll()
     }
 }
-
