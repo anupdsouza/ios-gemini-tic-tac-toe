@@ -11,3 +11,8 @@ Sample app demonstrating a Tic Tac Toe ❌⭕ game with Gemini AI as the opponen
 * [Storybook app powered by Gemini AI & Dall-E](https://github.com/anupdsouza/ios-gemini-storybook)
 
 Star the repo if you found this useful! ⭐️
+
+---
+TODO
+---
+- [ ] Detailed post
